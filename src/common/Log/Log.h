@@ -9,6 +9,8 @@
 #include <functional>
 #include <sstream>
 #include <vector>
+#include <map>
+#include <thread>
 
 enum Loglevel {
     Debug = 0,
@@ -23,15 +25,16 @@ public:
 public:
     void addHandle(const std::function<void(const std::string &msg)> &func, bool enableCache);
     void flush(const std::string &msg);
+    void setCacheSize(int size);
 
 private:
-    LogContext():m_cache(0), m_currCacheSize(0){}
+    LogContext():m_cache(), m_currCacheSize(0), m_maxCacheSize(0){}
     ~LogContext() = default;
 
 private:
     std::list<std::function<void(const std::string &msg)>> m_noCacheFunc;
     std::list<std::function<void(const std::string &msg)>> m_cacheFunc;
-    std::vector<std::string> m_cache;
+    std::string m_cache;
     int m_maxCacheSize;
     int m_currCacheSize;
 };
@@ -40,6 +43,7 @@ private:
  public:
      static void setLoglevel(Loglevel level);
      static void addHandle(const std::function<void(const std::string &msg)> &func, bool enableCache);
+     static void setCacheSize(int size);
 
  public:
      Log() = default;

@@ -11,6 +11,11 @@ LogContext* LogContext::instance() {
     return &_context;
 }
 
+void LogContext::setCacheSize(int size) {
+    m_maxCacheSize = size;
+    m_cache.resize(size);
+}
+
 void LogContext::addHandle(const std::function<void(const std::string &msg)> &func, bool enableCache){
     if (enableCache) {
         m_cacheFunc.push_back(func);
@@ -23,18 +28,17 @@ void LogContext::flush(const std::string &msg) {
     for (auto &func : m_noCacheFunc) {
         func(msg);
     }
-    if (!m_noCacheFunc.empty()) {
-        m_cache.push_back(msg);
+    if (!m_cacheFunc.empty()) {
         m_currCacheSize += msg.size();
     }
     if (m_currCacheSize >= m_maxCacheSize) {
-        for (auto &str : m_cache) {
             for (auto &func : m_cacheFunc) {
-                func(str);
+                func(m_cache + msg);
             }
-        }
         m_currCacheSize = 0;
         m_cache.clear();
+    } else {
+        m_cache.append(msg);
     }
 }
 
@@ -48,6 +52,10 @@ Log::~Log() {
 
 void Log::setLoglevel(Loglevel level) {
     m_logLevel = level;
+}
+
+void Log::setCacheSize(int size) {
+    LogContext::instance()->setCacheSize(size);
 }
 
 void Log::addHandle(const std::function<void(const std::string &msg)> &func, bool enableCache) {
