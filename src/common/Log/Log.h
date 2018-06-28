@@ -12,9 +12,9 @@
 #include <vector>
 #include <map>
 #include <thread>
+
 namespace snail {
     namespace log {
-
         using LogHandler = std::function<void(const std::string &msg)>;
         enum Loglevel {
             Debug = 0,
@@ -25,36 +25,28 @@ namespace snail {
 
         class LogContext {
         public:
-            static LogContext *instance();
+            LogContext() : m_cache_(), m_currCacheSize_(0), m_maxCacheSize_(0) {}
+            virtual ~LogContext() = default;
 
         public:
             void addHandler(const LogHandler &handler, bool enableCache);
-
             void flush(const std::string &msg);
-
             void setCacheSize(int size);
 
         private:
-            LogContext() : m_cache(), m_currCacheSize(0), m_maxCacheSize(0) {}
-
-            ~LogContext() {std::cout << "~logContext"<<std::endl;};
-
-        private:
-            std::list<std::function<void(const std::string &msg)>> m_noCacheFunc;
-            std::list<std::function<void(const std::string &msg)>> m_cacheFunc;
-            std::string m_cache;
-            int m_maxCacheSize;
-            int m_currCacheSize;
+            std::list<LogHandler> m_noCacheFunc_;
+            std::list<LogHandler> m_cacheFunc_;
+            std::string m_cache_;
+            int m_maxCacheSize_;
+            int m_currCacheSize_;
         };
 
         class Log {
         public:
             static void setLoglevel(Loglevel level);
-
-            static void addHandle(const std::function<void(const std::string &msg)> &func, bool enableCache);
-
+            static void addHandle(const LogHandler &handler, bool enableCache);
             static void setCacheSize(int size);
-
+            static void setLogContext(LogContext *context);
             const static std::vector<std::string> LogLevelStr;
 
         public:
@@ -71,13 +63,18 @@ namespace snail {
 
         private:
             static Loglevel m_logLevel;
+            static LogContext *m_context;
 
         private:
-            std::ostringstream m_oStream;
-            Loglevel m_currentLogLevel;
+            std::ostringstream m_oStream_;
+            Loglevel m_currentLogLevel_;
         };
     }
 }
 #define Debug() (snail::log::Log() << snail::log::Loglevel::Debug <<__TIME__ << __FILE__ << __LINE__)
+#define Trace() (snail::log::Log() << snail::log::Loglevel::Trace <<__TIME__ << __FILE__ << __LINE__)
+#define Warn()  (snail::log::Log() << snail::log::Loglevel::Warn <<__TIME__ << __FILE__ << __LINE__)
+#define Error() (snail::log::Log() << snail::log::Loglevel::Error <<__TIME__ << __FILE__ << __LINE__)
+
 
 #endif //SNAIL_LOGCONTEXT_H

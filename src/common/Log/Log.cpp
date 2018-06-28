@@ -6,75 +6,74 @@
 
 namespace snail {
     namespace log{
-        LogContext* LogContext::instance() {
-            static LogContext _context;
-            return &_context;
-        }
 
         void LogContext::setCacheSize(int size) {
-            m_maxCacheSize = size;
-            m_cache.resize(size);
+            m_maxCacheSize_ = size;
+            m_cache_.resize(size);
         }
 
         void LogContext::addHandler(const LogHandler &handler, bool enableCache){
             if (enableCache) {
-                m_cacheFunc.push_back(handler);
+                m_cacheFunc_.push_back(handler);
             } else {
-                m_noCacheFunc.push_back(handler);
+                m_noCacheFunc_.push_back(handler);
             }
         }
 
         void LogContext::flush(const std::string &msg) {
-            for (auto &func : m_noCacheFunc) {
+            for (auto &func : m_noCacheFunc_) {
                 func(msg);
             }
-            if (!m_cacheFunc.empty()) {
-                m_currCacheSize += msg.size();
+            if (!m_cacheFunc_.empty()) {
+                m_currCacheSize_ += msg.size();
             }
-            if (m_currCacheSize >= m_maxCacheSize) {
-                    for (auto &func : m_cacheFunc) {
-                        func(m_cache + msg);
-                    }
-                m_currCacheSize = 0;
-                m_cache.clear();
+            if (m_currCacheSize_ >= m_maxCacheSize_) {
+                for (auto &func : m_cacheFunc_) {
+                    func(m_cache_ + msg);
+                }
+                m_currCacheSize_ = 0;
+                m_cache_.clear();
             } else {
-                m_cache.append(msg);
+                m_cache_.append(msg);
             }
         }
 
         Loglevel Log::m_logLevel = Loglevel::Debug;
+        LogContext* Log::m_context = nullptr;
         const std::vector<std::string> Log::LogLevelStr   = {"[DEBUG]", "[TRACE]", "[WARN]", "[ERROR]"};
 
         Log::~Log() {
-            if (m_currentLogLevel >= m_logLevel) {
-                LogContext::instance()->flush(m_oStream.str());
+            if (m_currentLogLevel_ >= m_logLevel) {
+                m_context->flush(m_oStream_.str());
             }
         }
-
+        void Log::setLogContext(LogContext *context) {
+            m_context = context;
+        }
         void Log::setLoglevel(Loglevel level) {
             m_logLevel = level;
         }
 
         void Log::setCacheSize(int size) {
-            LogContext::instance()->setCacheSize(size);
+            m_context->setCacheSize(size);
         }
 
-        void Log::addHandle(const std::function<void(const std::string &msg)> &func, bool enableCache) {
-            LogContext::instance()->addHandler(func, enableCache);
+        void Log::addHandle(const LogHandler &handler, bool enableCache) {
+            m_context->addHandler(handler, enableCache);
         }
 
         Log& Log::operator << (const int value) {
-            m_oStream << "[" << value << "]";
+            m_oStream_ << "[" << value << "]";
             return *this;
         }
 
         Log& Log::operator << (const char *pChar) {
-            m_oStream << "[" << pChar << "]";
+            m_oStream_ << "[" << pChar << "]";
             return *this;
         }
 
         Log& Log::operator << (Loglevel level) {
-            m_oStream << LogLevelStr.at(level);
+            m_oStream_ << LogLevelStr.at(level);
             return *this;
         }
     }
