@@ -8,18 +8,18 @@
 #include "Log.h"
 int main() {
     std::cout << "hhhhhhh"<< std::endl;
-    Log::addHandle([](const std::string &message) {
+    snail::log::Log::addHandle([](const std::string &message) {
         std::cout << message << std::endl;
     }, false);
     std::cout << "hhhhhhhhh" << std::endl;
-    Log::addHandle([](const std::string &message){
+    snail::log::Log::addHandle([](const std::string &message){
         std::ofstream f;
         f.open("/tmp/tmp.txt");
         f << message;
         f.close();
     }, true);
     std::cout << "hhhhhhhhhhhhhhhhhh";
-    Log::setCacheSize(10);
+    snail::log::Log::setCacheSize(10);
     std::cout << "hhhhhhhhhhhhhhhhhh";
     Debug() << "hhhhhhh";
     Debug() << "dddddddddd";
