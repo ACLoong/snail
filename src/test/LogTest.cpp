@@ -4,23 +4,26 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
+#include "common/Log/Log.h"
+#include "minuint/minunint.h"
 
-#include "../common/Log/Log.h"
 int main() {
-    snail::log::LogContext context;
-    snail::log::Log::setLogContext(&context);
+    snail::LogContext context;
+    snail::Log::setLogContext(&context);
 
-    snail::log::Log::addHandle([](const std::string &message) {
+    snail::Log::addHandler([](const std::string &message) {
         std::cout << message << std::endl;
     }, false);
-    snail::log::Log::addHandle([](const std::string &message){
+    snail::Log::addHandler([](const std::string &message){
         std::ofstream f;
         f.open("/tmp/tmp.txt");
         f << message;
         f.close();
     }, true);
 
-    snail::log::Log::setCacheSize(10);
+    snail::Log::setCacheSize(10);
+    MU_RUN_SUITE(Debug);
+    MU_REPORT();
     Debug() << "hhhhhhh";
     Error() << "dddddddddd";
     return 0;

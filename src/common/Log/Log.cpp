@@ -5,8 +5,6 @@
 #include "Log.h"
 
 namespace snail {
-    namespace log{
-
         void LogContext::setCacheSize(int size) {
             m_maxCacheSize_ = size;
             m_cache_.resize(size);
@@ -38,7 +36,7 @@ namespace snail {
             }
         }
 
-        Loglevel Log::m_logLevel = Loglevel::Debug;
+        Log::Loglevel Log::m_logLevel = Loglevel::Debug;
         LogContext* Log::m_context = nullptr;
         const std::vector<std::string> Log::LogLevelStr   = {"[DEBUG]", "[TRACE]", "[WARN]", "[ERROR]"};
 
@@ -58,7 +56,7 @@ namespace snail {
             m_context->setCacheSize(size);
         }
 
-        void Log::addHandle(const LogHandler &handler, bool enableCache) {
+        void Log::addHandler(const LogHandler &handler, bool enableCache) {
             m_context->addHandler(handler, enableCache);
         }
 
@@ -76,6 +74,5 @@ namespace snail {
             m_oStream_ << LogLevelStr.at(level);
             return *this;
         }
-    }
 }
 
