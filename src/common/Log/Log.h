@@ -17,7 +17,7 @@ namespace snail {
         using LogHandler = std::function<void(const std::string &msg)>;
         class LogContext {
         public:
-            LogContext() : m_cache_(), m_currCacheSize_(0), m_maxCacheSize_(0) {}
+            LogContext() : cache_(), currCacheSize_(0), maxCacheSize_(0) {}
             virtual ~LogContext() = default;
 
         public:
@@ -26,11 +26,11 @@ namespace snail {
             void setCacheSize(int size);
 
         private:
-            std::list<LogHandler> m_noCacheFunc_;
-            std::list<LogHandler> m_cacheFunc_;
-            std::string m_cache_;
-            int m_maxCacheSize_;
-            int m_currCacheSize_;
+            std::list<LogHandler> noCacheFunc_;
+            std::list<LogHandler> cacheFunc_;
+            std::string cache_;
+            int maxCacheSize_;
+            int currCacheSize_;
         };
 
         class Log {
@@ -60,12 +60,12 @@ namespace snail {
             Log &operator<<(const char *pChar);
 
         private:
-            static Loglevel m_logLevel;
-            static LogContext *m_context;
+            static Loglevel logLevel_;
+            static LogContext *context_;
 
         private:
-            std::ostringstream m_oStream_;
-            Loglevel m_currentLogLevel_;
+            std::ostringstream oStream_;
+            Loglevel currentLogLevel_;
         };
 }
 #define Debug() (snail::Log() << snail::Log::Debug <<__TIME__ << __FILE__ << __LINE__)
