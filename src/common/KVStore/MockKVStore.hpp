@@ -6,16 +6,18 @@
 
 namespace snail{
 
-class MockKVStore : public IKVStore{
+class MockKVStore : implements IKVStore{
 public:
 	MockKVStore() = default;
 	virtual ~MockKVStore() = default;
-	MockKVStore_result_type put(const std::string &key, const std::string &value);
-	MockKVStore_result_type put(const std::string &&key, const std::string &&value);
-	MockKVStore_result_type get(const std::string &key);
-	MockKVStore_result_type get(const std::string &&key);
+	bool put(const std::string &key, const std::string &value);
+	bool put(const std::string &&key, const std::string &&value);
+	bool get(const std::string &key) const;
+	bool get(const std::string &key, std::string &value) const;
+	bool get(const std::string &&key) const;
+	bool get(const std::string &&key, std::string &value) const;
 private:
-	std::unordered_map<std::string, std::string> hashmap_;
+	std::unordered_map<std::string, std::string> store_;
 };
 }
 

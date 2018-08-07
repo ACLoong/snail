@@ -1,15 +1,37 @@
 #include <iostream>
-
-#include "minunint.h"
 #include "MockKVStore.hpp"
+#include "minunint.h"
+using std::cout;
+using std::endl;
+
 snail::MockKVStore mock;
 MU_TEST(Debug_put) {
-	mock.put("123", "qwe");
+	bool b = mock.put("123", "qwe");
+	cout << "insert \"123\" " << ( b  ? "success" : "failed" ) << endl;
+		
+	b  = mock.put("123", "qwe");
+	cout << "insert \"123\" " << ( b  ? "success" : "failed" ) << endl;
+	
+	std::string key = "key";
+	std::string value = "value";
+	b  = mock.put(key, value);
+	cout << "insert \"key\" " << ( b  ? "success" : "failed" ) << endl;
 }
 MU_TEST(Debug_get) {
-	mock.put("123", "qwe");
-	auto &&result = mock.get("123");	
-	std::cout << result.getValue() << std::endl;
+	bool b;
+	std::string s = "123", value;
+	
+	b = mock.get(s);	
+	cout << "get \"123\" " << (b ? "success" : "failed") << endl;	
+	
+	b = mock.get(s, value);	
+	cout << "get \"123\" " << (b ? "success" : "failed") << " value : " << value << endl;
+	
+	b = mock.get("123");	
+	cout << "get \"123\" " << (b ? "success" : "failed") << " value : " << value << endl;
+	
+	b = mock.get(std::move(s), value);	
+	cout << "get \"123\" " << (b ? "success" : "failed") << " value : " << value << endl;
 }
 int main()
 {

@@ -1,29 +1,46 @@
 #include "MockKVStore.hpp"
 
 namespace snail{
-	
-	MockKVStore_result_type MockKVStore::put(const std::string &key, const std::string &value){
-		auto result = hashmap_.insert(std::make_pair(key, value)).second;
-		return MockKVStore_result_type(result);
+	bool MockKVStore::put(const std::string &key, const std::string &value){
+		auto result = store_.insert(std::make_pair(key, value)).second;
+		return result;
 	}
-	MockKVStore_result_type MockKVStore::put(const std::string &&key, const std::string &&value){
-		auto result = hashmap_.insert(std::make_pair(key, value)).second;
-		return MockKVStore_result_type(result);
+	bool MockKVStore::put(const std::string &&key, const std::string &&value){
+		auto result = store_.insert(std::make_pair(key, value)).second;
+		return result;
 	}
-	MockKVStore_result_type MockKVStore::get(const std::string &key) {
-		auto result = hashmap_.find(key);
-		if (result != hashmap_.end()){
-			return MockKVStore_result_type(true, result->second);
+	bool MockKVStore::get(const std::string &key)const {
+		auto result = store_.find(key);
+		if (result != store_.end()){
+			return true;
 		}else{
-			return MockKVStore_result_type(false);
+			return false;
+		}
+	}	
+	bool MockKVStore::get(const std::string &key, std::string &value)const {
+		auto result = store_.find(key);
+		if (result != store_.end()){
+			value = result->second;
+			return true;
+		}else{
+			return false;
 		}
 	}
-	MockKVStore_result_type MockKVStore::get(const std::string &&key) {
-		auto result = hashmap_.find(key);
-		if (result != hashmap_.end()){
-			return MockKVStore_result_type(true, result->second);
+	bool MockKVStore::get(const std::string &&key)const {
+		auto result = store_.find(key);
+		if (result != store_.end()){
+			return true;
 		}else{
-			return MockKVStore_result_type(false);
+			return false;
+		}
+	}	
+	bool MockKVStore::get(const std::string &&key, std::string &value)const {
+		auto result = store_.find(key);
+		if (result != store_.end()){
+			value = result->second;
+			return true;
+		}else{
+			return false;
 		}
 	}
 }
