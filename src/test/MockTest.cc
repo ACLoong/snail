@@ -19,25 +19,26 @@ MU_TEST(Debug_put) {
 }
 MU_TEST(Debug_get) {
 	bool b;
-	std::string s = "123", value;
+	std::string key = "123", value;
 	
-	b = mock.get(s);	
+	b = mock.get(key);	
 	cout << "get \"123\" " << (b ? "success" : "failed") << endl;	
 	
-	b = mock.get(s, value);	
+	b = mock.get(key, value);	
 	cout << "get \"123\" " << (b ? "success" : "failed") << " value : " << value << endl;
 	
 	b = mock.get("123");	
 	cout << "get \"123\" " << (b ? "success" : "failed") << " value : " << value << endl;
 	
-	b = mock.get(std::move(s), value);	
+	b = mock.get(std::move(key), value);	
 	cout << "get \"123\" " << (b ? "success" : "failed") << " value : " << value << endl;
 }
 int main()
 {
 	MU_RUN_SUITE(Debug_put);
 	MU_RUN_SUITE(Debug_get);
-    MU_REPORT();
+	MU_REPORT();
 	
 	return 0;
 }
+
