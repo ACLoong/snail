@@ -9,7 +9,7 @@
 #include "object.h"
 
 namespace snail {
-    class Integer: public Object, hashable {
+    class Integer: public HashableObject {
     public:
 
     };

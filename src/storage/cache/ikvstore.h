@@ -31,14 +31,14 @@ namespace snail {
          * @param value
          * @return
          */
-        virtual Status put(const Object &key, const Object &value) = 0;
+        virtual Status put(const HashableObject &key, const Object &value) = 0;
 
         /**
          *
          * @param key
          * @return
          */
-        virtual Status remove(const HashableObject &key) const ;
+        virtual Status remove(const HashableObject &key) ;
 
         /**
          *

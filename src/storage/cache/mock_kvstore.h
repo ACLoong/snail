@@ -19,9 +19,9 @@ namespace snail {
         MockKVStore() = default;
         ~MockKVStore() = default;
 
-        Status get(const Object &key) const override ;
-        Status put(const Object &key, const Object &value) override ;
-        Status remove(const Object &key) override ;
+        Status get(const HashableObject &key, Object *value) const override ;
+        Status put(const HashableObject &key, const Object &value) override ;
+        Status remove(const HashableObject &key) override ;
         void clear() override ;
 
     protected:
