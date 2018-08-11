@@ -11,7 +11,7 @@ namespace snail {
      */
     class Object {
     public:
-
+        ~Object() = default;
     protected:
 
     private:
