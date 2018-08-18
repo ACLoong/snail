@@ -5,7 +5,12 @@
 #include "server.h"
 
 namespace snail {
-int Server::loop() {
-    return 0;
-}
+    void Server::DoAccept() {
+        auto accept_handler = [](const boost::system::error_code &error,
+                                 std::shared_ptr<SocketType> socket) {
+            //TODO(qwang): TODO here.
+        };
+
+        acceptor_.async_accept(socket_, accept_handler);
+    }
 }

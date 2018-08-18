@@ -15,40 +15,24 @@ namespace snail {
         using EndpointType = boost::asio::ip::tcp::endpoint;
         using SocketType = boost::asio::ip::tcp::socket;
 
-        explicit Server(unsigned short port)
-                : acceptor_(ioService_, EndpointType(boost::asio::ip::tcp::v4(), port)) {
-            accept();
+        Server(boost::asio::io_service io_service, unsigned short port)
+                :io_service_(io_service),
+                 acceptor_(io_service,
+                           EndpointType(boost::asio::ip::tcp::v4(), 0)),
+                 socket_(io_service) {
+            DoAccept();
         }
 
-        virtual ~Server() {
-            //TODO(qwang): Do some cleanup.
-        }
+        virtual ~Server() = default;
 
-        void run() {
-            ioService_.run();
-        }
 
     private:
-        void accept() {
-            std::shared_ptr<SocketType> socket(std::make_shared<SocketType >(ioService_));
-            using ErrorCodeType = boost::system::error_code;
-            using SocketPtrType = std::shared_ptr<SocketType>;
-
-            acceptor_.async_accept(*socket, [this](const ErrorCodeType &errorCode, SocketPtrType socket){
-                //TODO(qwang): It may be not correct, errorCode is an object.
-                if (errorCode) {
-                    return ;
-                }
-
-                //TODO(qwang): Register the client into server.
-
-                this->accept();
-            });
-        }
+        void DoAccept();
 
     private:
-        boost::asio::io_service ioService_;
+        boost::asio::io_service &io_service_;
         AcceptorType acceptor_;
+        SocketType socket_;
     };
 }
 
